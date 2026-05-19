@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 kotlin {
@@ -16,36 +18,15 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
-        }
-    }
-    
+
     jvm()
-    
-    js {
-        browser()
-        binaries.executable()
-    }
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation("io.insert-koin:koin-android:4.1.1")
-            implementation("io.insert-koin:koin-androidx-compose:4.1.1")
+            implementation("io.ktor:ktor-client-okhttp:2.3.12")
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -57,15 +38,24 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation("io.insert-koin:koin-core:4.1.1")
-        }
+            implementation("io.insert-koin:koin-compose:4.1.1")
+            implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
+            implementation("androidx.datastore:datastore-preferences-core:1.3.0-alpha08")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+
+          }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-            implementation("io.insert-koin:koin-compose:4.1.1")
-            implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
+            implementation("io.ktor:ktor-client-cio:2.3.12")
         }
     }
 }
@@ -99,6 +89,7 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+
 }
 
 compose.desktop {

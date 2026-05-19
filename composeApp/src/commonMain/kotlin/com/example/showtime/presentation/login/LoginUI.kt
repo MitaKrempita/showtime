@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.showtime.domain.validation.passwordCensorship
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -45,13 +45,15 @@ fun LoginUI(
             )
             Text(text = "Password")
             OutlinedTextField(
-                value = passwordCensorship(state.password),
+                value = state.password,
                 onValueChange = {
                     onAction(LoginIntent.ChangePassword(it))
                 },
+                visualTransformation = PasswordVisualTransformation(),
                 supportingText = { state.passwordError?.let { Text(text = it) } },
                 isError = (state.passwordError != null)
             )
+            Text(text = state.generalError?:"")
             Button(
                 onClick = {
                     onAction(LoginIntent.Login)
