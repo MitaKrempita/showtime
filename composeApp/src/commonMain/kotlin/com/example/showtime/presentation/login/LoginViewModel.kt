@@ -3,7 +3,7 @@ package com.example.showtime.presentation.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.showtime.domain.repository.AuthRepository
-import com.example.showtime.domain.rsult.LoginResult
+import com.example.showtime.domain.result.AuthResult
 import com.example.showtime.domain.validation.ValidationResult
 import com.example.showtime.domain.validation.passwordVerification
 import com.example.showtime.domain.validation.usernameVerification
@@ -38,7 +38,7 @@ class LoginViewModel(
             _uiState.update { currentState -> currentState.copy(isLogging = true) }
             val response = repository.login(currentState.username, currentState.password)
             _uiState.update {
-                currentState -> currentState.copy(generalError = if (response is LoginResult.Error) response.message else null)
+                currentState -> currentState.copy(generalError = if (response is AuthResult.Error) response.message else null)
             }
         }finally {
             _uiState.update { it.copy(isLogging = false) }

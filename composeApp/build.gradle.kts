@@ -7,12 +7,12 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
 
     kotlin("plugin.serialization") version "2.0.21"
 }
 
 kotlin {
+    jvmToolchain(21)
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -29,25 +29,26 @@ kotlin {
             implementation("io.ktor:ktor-client-okhttp:2.3.12")
         }
         commonMain.dependencies {
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.components.resources)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+
             implementation(libs.compose.uiToolingPreview)
+
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation("io.insert-koin:koin-core:4.1.1")
             implementation("io.insert-koin:koin-compose:4.1.1")
             implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
-            implementation("androidx.datastore:datastore-preferences-core:1.3.0-alpha08")
+            implementation("androidx.datastore:datastore-preferences-core:1.1.1")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-
+            implementation("androidx.navigation:navigation-compose:2.9.8")
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
-
-          }
+        }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -56,6 +57,8 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation("io.ktor:ktor-client-cio:2.3.12")
+            implementation("org.jetbrains.skiko:skiko-awt:0.8.18")
+            implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.8.18")
         }
     }
 }
@@ -95,6 +98,9 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "com.example.showtime.MainKt"
+
+        jvmArgs += listOf("-Djava.io.tmpdir=${project.layout.buildDirectory.get().asFile.absolutePath}/tmp")
+
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

@@ -1,4 +1,4 @@
-package com.example.showtime.presentation.login
+package com.example.showtime.presentation.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,16 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.example.showtime.infrastructure.datastore.getExprValue
+import com.example.showtime.presentation.login.LoginIntent
 
 @Composable
-fun LoginUI(
-    state : LoginState,
-    onAction: (LoginIntent) -> Unit
+fun SignupUI(
+    state : SignupState,
+    onAction: (SignupIntent) -> Unit
 )
 {
-    Row{
-
-    }
     Row {
         Column(
             modifier = Modifier.background(color = Color.LightGray)
@@ -31,11 +30,20 @@ fun LoginUI(
             horizontalAlignment = Alignment.CenterHorizontally
         )
         {
+            Text(text = "Full Name")
+            OutlinedTextField(
+                value = state.fullName,
+                onValueChange = {
+                    onAction(SignupIntent.ChangeFullName(it))
+                },
+                supportingText = { state.fullNameError?.let { Text(text = it) } },
+                isError = (state.fullNameError != null)
+            )
             Text(text = "Username")
             OutlinedTextField(
                 value = state.username,
                 onValueChange = {
-                    onAction(LoginIntent.ChangeUsername(it))
+                    onAction(SignupIntent.ChangeUsername(it))
                 },
                 supportingText = { state.usernameError?.let { Text(text = it) } },
                 isError = (state.usernameError != null)
@@ -44,7 +52,7 @@ fun LoginUI(
             OutlinedTextField(
                 value = state.password,
                 onValueChange = {
-                    onAction(LoginIntent.ChangePassword(it))
+                    onAction(SignupIntent.ChangePassword(it))
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 supportingText = { state.passwordError?.let { Text(text = it) } },
@@ -53,15 +61,14 @@ fun LoginUI(
             Text(text = state.generalError?:"")
             Button(
                 onClick = {
-                    onAction(LoginIntent.Login)
+                    onAction(SignupIntent.Signup)
                 },
-                enabled = !state.isLogging
+                enabled = !state.isLoading
             )
             {
-                Text(text = "Login")
+                Text(text = "Sign up")
             }
 
         }
     }
-
 }
