@@ -1,9 +1,7 @@
 package com.example.showtime.infrastructure.network
 
-import com.example.showtime.infrastructure.api.login.dto.AuthResponseDTO
-
-sealed class ApiResult {
-    data class Success(val data: AuthResponseDTO) : ApiResult()
-    data class Error(val message: AppExceptionResponse) : ApiResult()
+sealed interface ApiResult<out T> {
+    data class Success<out T>(val data: T) : ApiResult<T>
+    data class Error(val message: AppExceptionResponse) : ApiResult<Nothing>
 }
 
