@@ -1,4 +1,4 @@
-package com.example.showtime.infrastructure.data
+package com.example.showtime.infrastructure.data.auth
 
 import kotlinx.serialization.Serializable
 

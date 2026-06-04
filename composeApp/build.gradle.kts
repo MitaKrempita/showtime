@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +10,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 
     kotlin("plugin.serialization") version "2.0.21"
 }
@@ -15,7 +20,7 @@ kotlin {
     jvmToolchain(21)
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -35,6 +40,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
 
+            implementation(compose.materialIconsExtended)
             implementation(libs.compose.uiToolingPreview)
 
             implementation(libs.androidx.lifecycle.viewmodelCompose)
@@ -44,10 +50,17 @@ kotlin {
             implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
             implementation("androidx.datastore:datastore-preferences-core:1.1.1")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-            implementation("androidx.navigation:navigation-compose:2.9.8")
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+            implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+            implementation("io.coil-kt.coil3:coil-network-ktor2:3.0.4")
+            implementation(libs.ktor.client.auth)
+            implementation(compose.materialIconsExtended)
         }
 
         commonTest.dependencies {
@@ -62,6 +75,7 @@ kotlin {
         }
     }
 }
+
 
 android {
     namespace = "com.example.showtime"
@@ -85,14 +99,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
+}
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
-
+    add("kspAndroid", libs.androidx.room.compiler)
+  //  add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+  //  add("kspIosX64", libs.androidx.room.compiler)
+   // add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspJvm", libs.androidx.room.compiler)
 }
 
 compose.desktop {
